@@ -23,6 +23,9 @@ public class User {
     @Column(name = "oauth_provider")
     private String oAuthProvider;
 
+    @Column(name = "oauth_subject")
+    private String oauthSubject;
+
     public User() {
     }
 
@@ -73,4 +76,10 @@ public class User {
     public void setOAuthProvider(String oAuthProvider) {
         this.oAuthProvider = oAuthProvider;
     }
+
+    public String getOauthSubject() { return oauthSubject; }
+
+    public void setOauthSubject( String oauthSubject) {this.oauthSubject = oauthSubject; }
+
+
 }
