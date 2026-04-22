@@ -1,62 +1,76 @@
-package API;
+package com.group1.project3.entity;
 
+import jakarta.persistence.*;
 import java.util.UUID;
 
-public class user {
+@Entity
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false, unique = true)
     private String username;
+
+    @Column(nullable = false)
     private String password;
-    private String OAuth_Provider;
-    
-    public user() {
+
+    @Column(name = "oauth_provider")
+    private String oAuthProvider;
+
+    public User() {
     }
-    
-    public user(UUID id, String email, String username, String password, String OAuth_Provider) {
+
+    public User(UUID id, String email, String username, String password, String oAuthProvider) {
         this.id = id;
         this.email = email;
         this.username = username;
         this.password = password;
-        this.OAuth_Provider = OAuth_Provider;
+        this.oAuthProvider = oAuthProvider;
     }
-    
+
     public UUID getId() {
         return id;
     }
-    
+
     public void setId(UUID id) {
         this.id = id;
     }
-    
+
     public String getEmail() {
         return email;
     }
-    
+
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
     public String getUsername() {
         return username;
     }
-    
+
     public void setUsername(String username) {
         this.username = username;
     }
-    
+
     public String getPassword() {
         return password;
     }
-    
+
     public void setPassword(String password) {
         this.password = password;
     }
-    
-    public String getOAuth_Provider() {
-        return OAuth_Provider;
+
+    public String getOAuthProvider() {
+        return oAuthProvider;
     }
-    
-    public void setOAuth_Provider(String OAuth_Provider) {
-        this.OAuth_Provider = OAuth_Provider;
+
+    public void setOAuthProvider(String oAuthProvider) {
+        this.oAuthProvider = oAuthProvider;
     }
 }
