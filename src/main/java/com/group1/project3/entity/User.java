@@ -1,6 +1,9 @@
 package com.group1.project3.entity;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -25,7 +28,17 @@ public class User {
     private Permission permission;
 
     @Column(name = "oauth_provider")
-    private String oAuthProvider;
+    private String authProvider;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Project> projectEntries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Application> applications = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserProfile profile;
+
 
     @Column(name = "oauth_subject")
     private String oauthSubject;
@@ -33,12 +46,12 @@ public class User {
     public User() {
     }
 
-    public User(UUID id, String email, String username, String password, String oAuthProvider) {
+    public User(UUID id, String email, String username, String password, String authProvider) {
         this.id = id;
         this.email = email;
         this.username = username;
         this.password = password;
-        this.oAuthProvider = oAuthProvider;
+        this.authProvider = authProvider;
     }
 
     public UUID getId() {
@@ -74,11 +87,11 @@ public class User {
     }
 
     public String getOAuthProvider() {
-        return oAuthProvider;
+        return authProvider;
     }
 
     public void setOAuthProvider(String oAuthProvider) {
-        this.oAuthProvider = oAuthProvider;
+        this.authProvider = oAuthProvider;
     }
 
     public String getOauthSubject() { return oauthSubject; }
