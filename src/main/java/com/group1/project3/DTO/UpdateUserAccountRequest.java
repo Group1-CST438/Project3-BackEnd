@@ -1,4 +1,9 @@
 package com.group1.project3.DTO;
 
-public record UpdateUserAccountRequest(String username, String password, String email) {
+import jakarta.validation.constraints.Email;
+
+public record UpdateUserAccountRequest(
+        String username,
+        String password,
+        @Email String email) {
 }

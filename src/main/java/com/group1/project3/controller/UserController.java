@@ -1,5 +1,6 @@
 package com.group1.project3.controller;
 
+import com.group1.project3.DTO.GetUserResponseRequest;
 import com.group1.project3.DTO.UpdateUserAccountRequest;
 import com.group1.project3.DTO.UpdateUserPermissionRequest;
 import com.group1.project3.entity.User;
@@ -21,23 +22,23 @@ public class UserController {
     public UserController( UserService userService) {this.userService= userService;}
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() { return ResponseEntity.ok(userService.getAllUsers());}
+    public ResponseEntity<List<GetUserResponseRequest>> getAllUsers() { return ResponseEntity.ok(userService.getAllUsers());}
 
     @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable UUID userId){
+    public ResponseEntity<GetUserResponseRequest> getUserById(@PathVariable UUID userId){
         return ResponseEntity.ok(userService.getUserById(userId));
     }
 
     @PatchMapping("/{userId}/info")
-    public ResponseEntity<User> updateUserInfo(@PathVariable UUID userId, @Valid @RequestBody UpdateUserAccountRequest request){
-        User updated = userService.updateInfo(userId, request);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<Void> updateUserInfo(@PathVariable UUID userId, @Valid @RequestBody UpdateUserAccountRequest request){
+        userService.updateInfo(userId, request);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{userId}/permission")
-    public ResponseEntity<User> updateUserPermission(@PathVariable UUID userId, @Valid @RequestBody UpdateUserPermissionRequest request){
-        User updated = userService.updatePermission(userId, request);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<Void> updateUserPermission(@PathVariable UUID userId, @Valid @RequestBody UpdateUserPermissionRequest request){
+        userService.updatePermission(userId, request);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{userId}")

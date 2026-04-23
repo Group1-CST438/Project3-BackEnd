@@ -1,5 +1,6 @@
 package com.group1.project3.service;
 
+import com.group1.project3.DTO.GetUserResponseRequest;
 import com.group1.project3.DTO.UpdateUserAccountRequest;
 import com.group1.project3.DTO.UpdateUserPermissionRequest;
 import com.group1.project3.OAuth.OAuthUserAttributesResolver;
@@ -27,18 +28,39 @@ public class UserService {
         this.oAuthUserAttributesResolver =  oAuthUserAttributesResolver;
     }
 
-    public List<User> getAllUsers() {return userRepository.findAll(); }
+    public List<GetUserResponseRequest> getAllUsers() {
 
-    public User getUserById(UUID userId){
-        return userRepository.findById(userId)
+        List<User> users = userRepository.findAll();
+
+
+        return users.stream()
+                .map( user -> new GetUserResponseRequest(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        user.getPermission()
+                )).toList();
+
+    }
+
+    public GetUserResponseRequest getUserById(UUID userId){
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found. "));
+
+        return new GetUserResponseRequest(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getPermission()
+        );
     }
 
     public User updateInfo(UUID userId, UpdateUserAccountRequest request){
 
 
 
-        User user = getUserById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found. "));
 
         if (request.username() != null ){
             if(request.username().isBlank()) {
@@ -80,9 +102,9 @@ public class UserService {
     }
 
     public User updatePermission(UUID userId, UpdateUserPermissionRequest request){
-        if(request.permission() == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please include permission to promote the user to.");
 
-        User promote = getUserById(userId);
+        User promote = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         promote.setPermission(request.permission());
 
@@ -90,7 +112,8 @@ public class UserService {
     }
 
     public User delete(UUID userId){
-        User user = getUserById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         userRepository.deleteById(userId);
         return user;
     }
