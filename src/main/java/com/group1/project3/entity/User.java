@@ -30,6 +30,10 @@ public class User {
     @Column(name = "oauth_provider")
     private String authProvider;
 
+    @Column(name = "oauth_subject")
+    private String oauthSubject;
+
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Project> projectEntries = new ArrayList<>();
 
@@ -38,10 +42,6 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserProfile profile;
-
-
-    @Column(name = "oauth_subject")
-    private String oauthSubject;
 
     public User() {
     }
@@ -97,6 +97,10 @@ public class User {
     public String getOauthSubject() { return oauthSubject; }
 
     public void setOauthSubject( String oauthSubject) {this.oauthSubject = oauthSubject; }
+
+    public Permission getPermission() {return permission;}
+
+    public void setPermission( Permission permission) { this.permission = permission;}
 
 
 }
