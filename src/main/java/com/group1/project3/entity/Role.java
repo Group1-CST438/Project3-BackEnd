@@ -17,6 +17,10 @@ public class Role {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name="project_id", nullable = false)
+    private Project project;
+
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Application> applications = new ArrayList<>();
 
