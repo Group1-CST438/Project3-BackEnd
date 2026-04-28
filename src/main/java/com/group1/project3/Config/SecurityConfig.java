@@ -1,0 +1,83 @@
+package com.group1.project3.Config;
+
+import com.group1.project3.service.CustomOAuth2UserService;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import java.util.List;
+
+@Configuration
+public class SecurityConfig {
+
+    @Value("${app.frontend.origin:http://locahost:3000}")
+    private String frontendOrigin;
+
+    @Value("${app.frontend.success-url:http://localhost:3000}")
+    private String frontendSuccessUrl;
+
+    @Bean
+    SecurityFilterChain springFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration cfg = new CorsConfiguration();
+                    cfg.setAllowedOrigins(List.of(frontendOrigin));
+                    cfg.setAllowedMethods(List.of("GET","POST","PATCH","DELETE","OPTIONS"));
+                    cfg.setAllowedHeaders(List.of("*"));
+                    cfg.setAllowCredentials(true);
+                    return cfg;
+                }))
+                .authorizeHttpRequests(auth -> auth
+                        // Preflight requests
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // Public endpoints
+                        .requestMatchers("/", "/error").permitAll()
+
+                        // OAuth endpoints must be public
+                        .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
+
+                        // Protect your API
+                        .requestMatchers("/api/**").authenticated()
+
+                        // Everything else (adjust as you like)
+                        .requestMatchers(HttpMethod.PATCH, "/user/*/info").hasRole("USER")
+                        .requestMatchers("/user/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth -> oauth
+                        .defaultSuccessUrl(frontendSuccessUrl, true)
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                )
+                .formLogin(AbstractHttpConfigurer::disable)
+                .logout(logout -> logout
+                        .logoutUrl("/api/logout")
+                        .logoutSuccessUrl(frontendOrigin + "/")
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            response.getWriter().write("""
+                                    {"error": "NOT AUTHENTICATED", "message" : "Authentication required"}
+                                    """
+                            );
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            response.getWriter().write("""
+                                    {"error": "FORBIDDEN", "message" : "Insufficient permissions"}
+                                    """);
+                        })
+                );
+        return http.build();
+    }
+}
