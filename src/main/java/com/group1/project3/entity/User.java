@@ -14,13 +14,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = false)
     private String email;
 
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -31,7 +31,7 @@ public class User {
     private String authProvider;
 
     @Column(name = "oauth_subject")
-    private String oauthSubject;
+    private String authSubject;
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -46,12 +46,13 @@ public class User {
     public User() {
     }
 
-    public User(UUID id, String email, String username, String password, String authProvider) {
+    public User(UUID id, String email, String username, String password, String authProvider, String authSubject) {
         this.id = id;
         this.email = email;
         this.username = username;
         this.password = password;
         this.authProvider = authProvider;
+        this.authSubject = authSubject;
     }
 
     public UUID getId() {
@@ -94,9 +95,9 @@ public class User {
         this.authProvider = oAuthProvider;
     }
 
-    public String getOauthSubject() { return oauthSubject; }
+    public String getOauthSubject() { return authSubject; }
 
-    public void setOauthSubject( String oauthSubject) {this.oauthSubject = oauthSubject; }
+    public void setOauthSubject( String oauthSubject) {this.authSubject = oauthSubject; }
 
     public Permission getPermission() {return permission;}
 

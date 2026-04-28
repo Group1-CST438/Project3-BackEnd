@@ -1,4 +1,4 @@
-package com.group1.project3.service;
+package com.group1.project3.OAuth;
 
 import com.group1.project3.entity.Permission;
 import com.group1.project3.entity.User;
@@ -10,7 +10,6 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import com.group1.project3.OAuth.OAuthUserAttributesResolver;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -34,6 +33,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
+        System.out.println("CUSTOM OAUTH SERVICE RAN");
         OAuth2User oauthUser = fetchOAuthUser(request);
         Map<String, Object> attrs = oauthUser.getAttributes();
         String provider = oAuthUserAttributesResolver.resolveProvider(attrs);
@@ -46,10 +46,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
                 .getUserNameAttributeName();
 
         if(!StringUtils.hasText(nameAttributeKey)){
-            nameAttributeKey = "github".equals(provider) ? "login" : "sub";
+            nameAttributeKey = "id";
         }
 
-        User user = userRepository.findByOauthProviderAndOAuthSubject(provider, subject)
+        User user = userRepository.findByAuthProviderAndAuthSubject(provider, subject)
                 .map(existingUser -> {
                     Permission desiredPermission = oAuthUserAttributesResolver.resolvePermission(existingUser);
                     if(existingUser.getPermission() != desiredPermission){

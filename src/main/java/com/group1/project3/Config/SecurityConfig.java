@@ -1,6 +1,6 @@
 package com.group1.project3.Config;
 
-import com.group1.project3.service.CustomOAuth2UserService;
+import com.group1.project3.OAuth.CustomOAuth2UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +19,7 @@ public class SecurityConfig {
     @Value("${app.frontend.origin:http://locahost:3000}")
     private String frontendOrigin;
 
-    @Value("${app.frontend.success-url:http://localhost:3000}")
+    @Value("http://localhost:8080/swagger-ui.html")
     private String frontendSuccessUrl;
 
     @Bean
@@ -47,11 +47,16 @@ public class SecurityConfig {
                         // Protect your API
                         .requestMatchers("/api/**").authenticated()
 
+                        .requestMatchers("/swagger-ui.html","/swagger-ui/**","/v3/api-docs/**").permitAll()
+
+                        .requestMatchers("/h2-console/**").permitAll()
+
                         // Everything else (adjust as you like)
                         .requestMatchers(HttpMethod.PATCH, "/user/*/info").hasRole("USER")
                         .requestMatchers("/user/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
                 .oauth2Login(oauth -> oauth
                         .defaultSuccessUrl(frontendSuccessUrl, true)
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
