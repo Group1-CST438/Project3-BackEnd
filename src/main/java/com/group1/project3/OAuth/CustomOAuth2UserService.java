@@ -3,6 +3,7 @@ package com.group1.project3.OAuth;
 import com.group1.project3.entity.Permission;
 import com.group1.project3.entity.User;
 import com.group1.project3.repository.UserRepository;
+import com.group1.project3.service.UserProfileService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -22,13 +23,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 
     private final UserRepository userRepository;
     private final OAuthUserAttributesResolver oAuthUserAttributesResolver;
+    private final UserProfileService userProfileService;
 
     public CustomOAuth2UserService(
             UserRepository userRepository,
-            OAuthUserAttributesResolver oAuthUserAttributesResolver
+            OAuthUserAttributesResolver oAuthUserAttributesResolver,
+            UserProfileService userProfileService
     ){
         this.userRepository = userRepository;
         this.oAuthUserAttributesResolver = oAuthUserAttributesResolver;
+        this.userProfileService = userProfileService;
     }
 
     @Override
@@ -72,6 +76,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 
         Set<GrantedAuthority> authorities = new HashSet<>(oauthUser.getAuthorities());
         authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getPermission().name()));
+
+        userProfileService.create(user);
 
         return new DefaultOAuth2User(authorities, oauthUser.getAttributes(), nameAttributeKey);
     }

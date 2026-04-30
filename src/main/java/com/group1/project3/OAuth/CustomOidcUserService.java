@@ -3,6 +3,7 @@ package com.group1.project3.OAuth;
 import com.group1.project3.entity.Permission;
 import com.group1.project3.entity.User;
 import com.group1.project3.repository.UserRepository;
+import com.group1.project3.service.UserProfileService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -21,11 +22,13 @@ public class CustomOidcUserService extends OidcUserService {
 
     private final UserRepository userRepository;
     private final OAuthUserAttributesResolver oAuthUserAttributesResolver;
+    private final UserProfileService userProfileService;
 
 
-    public CustomOidcUserService(UserRepository userRepository, OAuthUserAttributesResolver oAuthUserAttributesResolver){
+    public CustomOidcUserService(UserRepository userRepository, OAuthUserAttributesResolver oAuthUserAttributesResolver, UserProfileService userProfileService){
         this.userRepository = userRepository;
         this.oAuthUserAttributesResolver = oAuthUserAttributesResolver;
+        this.userProfileService = userProfileService;
     }
 
     @Override
@@ -59,6 +62,8 @@ public class CustomOidcUserService extends OidcUserService {
 
         Set<GrantedAuthority> authorities = new HashSet<>(oidcUser.getAuthorities());
         authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getPermission().name()));
+
+        userProfileService.create(user);
 
         return new DefaultOidcUser(
                 authorities,
