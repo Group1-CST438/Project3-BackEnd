@@ -42,8 +42,8 @@ public class UserProfile {
         return user.getId();
     }
 
-    public void setUserId(UUID userId) {
-        user.setId(userId);
+    public void setUser(User user) {
+       this.user = user;
     }
 
     public String getBio() {

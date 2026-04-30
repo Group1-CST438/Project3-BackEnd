@@ -57,13 +57,12 @@ public class CustomOidcUserService extends OidcUserService {
                     newUser.setOAuthProvider(provider);
                     newUser.setOauthSubject(subject);
                     newUser.setPermission(Permission.USER);
+                    userProfileService.create(newUser);
                     return userRepository.save(newUser);
                 });
 
         Set<GrantedAuthority> authorities = new HashSet<>(oidcUser.getAuthorities());
         authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getPermission().name()));
-
-        userProfileService.create(user);
 
         return new DefaultOidcUser(
                 authorities,

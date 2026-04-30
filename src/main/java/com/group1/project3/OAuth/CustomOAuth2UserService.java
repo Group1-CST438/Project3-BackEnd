@@ -71,13 +71,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
                     newUser.setOAuthProvider(provider);
                     newUser.setOauthSubject(subject);
                     newUser.setPermission(Permission.USER);
+                    userProfileService.create(newUser);
                     return userRepository.save(newUser);
                 });
 
         Set<GrantedAuthority> authorities = new HashSet<>(oauthUser.getAuthorities());
         authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getPermission().name()));
-
-        userProfileService.create(user);
 
         return new DefaultOAuth2User(authorities, oauthUser.getAttributes(), nameAttributeKey);
     }
