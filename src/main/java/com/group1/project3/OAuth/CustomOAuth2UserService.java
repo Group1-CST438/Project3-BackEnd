@@ -3,6 +3,7 @@ package com.group1.project3.OAuth;
 import com.group1.project3.entity.Permission;
 import com.group1.project3.entity.User;
 import com.group1.project3.repository.UserRepository;
+import com.group1.project3.service.UserProfileService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -22,18 +23,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 
     private final UserRepository userRepository;
     private final OAuthUserAttributesResolver oAuthUserAttributesResolver;
+    private final UserProfileService userProfileService;
 
     public CustomOAuth2UserService(
             UserRepository userRepository,
-            OAuthUserAttributesResolver oAuthUserAttributesResolver
+            OAuthUserAttributesResolver oAuthUserAttributesResolver,
+            UserProfileService userProfileService
     ){
         this.userRepository = userRepository;
         this.oAuthUserAttributesResolver = oAuthUserAttributesResolver;
+        this.userProfileService = userProfileService;
     }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
-        System.out.println("CUSTOM OAUTH SERVICE RAN");
         OAuth2User oauthUser = fetchOAuthUser(request);
         Map<String, Object> attrs = oauthUser.getAttributes();
         String provider = oAuthUserAttributesResolver.resolveProvider(attrs);
@@ -67,7 +70,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
                     newUser.setOAuthProvider(provider);
                     newUser.setOauthSubject(subject);
                     newUser.setPermission(Permission.USER);
-                    return userRepository.save(newUser);
+                    User savedUser = userRepository.save(newUser);
+                    userProfileService.create(savedUser);
+                    return savedUser;
                 });
 
         Set<GrantedAuthority> authorities = new HashSet<>(oauthUser.getAuthorities());

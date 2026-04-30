@@ -38,12 +38,12 @@ public class UserProfile {
         this.id = id;
     }
 
-    public UUID getUserId() {
-        return user.getId();
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(UUID userId) {
-        user.setId(userId);
+    public void setUser(User user) {
+       this.user = user;
     }
 
     public String getBio() {

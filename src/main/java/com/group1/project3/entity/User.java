@@ -103,5 +103,14 @@ public class User {
 
     public void setPermission( Permission permission) { this.permission = permission;}
 
+    public UserProfile getProfile() { return profile;}
+
+    public void setProfile(UserProfile profile){
+        this.profile = profile;
+        if(profile != null){
+            profile.setUser(this);
+        }
+    }
+
 
 }
