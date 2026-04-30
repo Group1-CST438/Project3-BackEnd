@@ -125,7 +125,7 @@ public class UserService {
         String provider = oAuthUserAttributesResolver.resolveProvider(attrs);
         String subject = oAuthUserAttributesResolver.resolveSubject(provider, attrs);
 
-        return userRepository.findByOauthProviderAndOAuthSubject(provider, subject)
+        return userRepository.findByAuthProviderAndAuthSubject(provider, subject)
                 .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Authenticated user not found."));
 
 

@@ -16,7 +16,7 @@ public class Project {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private UUID userId;
+    private User user;
 
     @Column(nullable = false)
     private String title;
@@ -34,9 +34,9 @@ public class Project {
     public Project() {
     }
 
-    public Project(UUID id, UUID userId, String title, String generalDescription, String type, String county) {
+    public Project(UUID id, User user, String title, String generalDescription, String type, String county) {
         this.id = id;
-        this.userId = userId;
+        this.user = user;
         this.title = title;
         this.generalDescription = generalDescription;
         this.type = type;
@@ -52,11 +52,11 @@ public class Project {
     }
 
     public UUID getUserId() {
-        return userId;
+        return user.getId();
     }
 
     public void setUserId(UUID userId) {
-        this.userId = userId;
+         user.setId(userId);
     }
 
     public String getTitle() {
@@ -90,4 +90,8 @@ public class Project {
     public void setCounty(String county) {
         this.county = county;
     }
+
+    public List<Role> getRoles() { return roles;}
+
+    public void setRoles() {this.roles = roles;}
 }

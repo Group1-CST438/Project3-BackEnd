@@ -13,7 +13,7 @@ public class UserProfile {
 
     @OneToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private UUID userId;
+    private User user;
 
     private String bio;
 
@@ -23,9 +23,9 @@ public class UserProfile {
     public UserProfile() {
     }
 
-    public UserProfile(UUID id, UUID userId, String bio, String profilePictureUrl) {
+    public UserProfile(UUID id, User user, String bio, String profilePictureUrl) {
         this.id = id;
-        this.userId = userId;
+        this.user = user;
         this.bio = bio;
         this.profilePictureUrl = profilePictureUrl;
     }
@@ -39,11 +39,11 @@ public class UserProfile {
     }
 
     public UUID getUserId() {
-        return userId;
+        return user.getId();
     }
 
     public void setUserId(UUID userId) {
-        this.userId = userId;
+        user.setId(userId);
     }
 
     public String getBio() {
