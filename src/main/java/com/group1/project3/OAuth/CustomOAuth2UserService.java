@@ -71,7 +71,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
                     newUser.setOauthSubject(subject);
                     newUser.setPermission(Permission.USER);
                     User savedUser = userRepository.save(newUser);
-                    userProfileService.create(newUser);
+                    userProfileService.create(savedUser);
                     return savedUser;
                 });
 

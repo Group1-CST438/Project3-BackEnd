@@ -58,7 +58,7 @@ public class CustomOidcUserService extends OidcUserService {
                     newUser.setOauthSubject(subject);
                     newUser.setPermission(Permission.USER);
                     User savedUser = userRepository.save(newUser);
-                    userProfileService.create(newUser);
+                    userProfileService.create(savedUser);
                     return savedUser;
                 });
 
