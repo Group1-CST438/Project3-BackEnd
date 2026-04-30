@@ -37,7 +37,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
-        System.out.println("CUSTOM OAUTH SERVICE RAN");
         OAuth2User oauthUser = fetchOAuthUser(request);
         Map<String, Object> attrs = oauthUser.getAttributes();
         String provider = oAuthUserAttributesResolver.resolveProvider(attrs);
@@ -71,8 +70,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
                     newUser.setOAuthProvider(provider);
                     newUser.setOauthSubject(subject);
                     newUser.setPermission(Permission.USER);
+                    User savedUser = userRepository.save(newUser);
                     userProfileService.create(newUser);
-                    return userRepository.save(newUser);
+                    return savedUser;
                 });
 
         Set<GrantedAuthority> authorities = new HashSet<>(oauthUser.getAuthorities());

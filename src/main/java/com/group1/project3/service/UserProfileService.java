@@ -18,13 +18,13 @@ public class UserProfileService {
 
     public UserProfileService(UserProfileRepository userProfileRepository){ this.userProfileRepository = userProfileRepository;}
 
-    public GetUserProfileResponseRequest getProfileById(UUID userId){
+    public GetUserProfileResponseRequest getProfileByUserId(UUID userId){
         UserProfile profile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
 
         return new GetUserProfileResponseRequest(
                 profile.getId(),
-                profile.getUserId(),
+                profile.getUser().getId(),
                 profile.getBio(),
                 profile.getProfilePictureUrl()
         );

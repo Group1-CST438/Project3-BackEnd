@@ -19,7 +19,7 @@ public class UserProfileController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<GetUserProfileResponseRequest> getProfileByUserId(@PathVariable UUID userId){
-        return ResponseEntity.ok(userProfileService.getProfileById(userId));
+        return ResponseEntity.ok(userProfileService.getProfileByUserId(userId));
     }
 
     @PatchMapping("/{profileId}")

@@ -1,6 +1,7 @@
 package com.group1.project3.entity;
 
 import jakarta.persistence.*;
+import org.springframework.context.annotation.Profile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +103,10 @@ public class User {
     public Permission getPermission() {return permission;}
 
     public void setPermission( Permission permission) { this.permission = permission;}
+
+    public UserProfile getProfile() { return profile;}
+
+    public void setProfile(UserProfile profile){ this.profile = profile;}
 
 
 }

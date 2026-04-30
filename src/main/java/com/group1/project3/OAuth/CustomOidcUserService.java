@@ -57,8 +57,9 @@ public class CustomOidcUserService extends OidcUserService {
                     newUser.setOAuthProvider(provider);
                     newUser.setOauthSubject(subject);
                     newUser.setPermission(Permission.USER);
+                    User savedUser = userRepository.save(newUser);
                     userProfileService.create(newUser);
-                    return userRepository.save(newUser);
+                    return savedUser;
                 });
 
         Set<GrantedAuthority> authorities = new HashSet<>(oidcUser.getAuthorities());

@@ -38,8 +38,8 @@ public class UserProfile {
         this.id = id;
     }
 
-    public UUID getUserId() {
-        return user.getId();
+    public User getUser() {
+        return user;
     }
 
     public void setUser(User user) {
