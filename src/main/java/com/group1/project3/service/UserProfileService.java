@@ -20,7 +20,7 @@ public class UserProfileService {
 
     public GetUserProfileResponseRequest getProfileByUserId(UUID userId){
         UserProfile profile = userProfileRepository.findByUserId(userId)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist"));
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found"));
 
         return new GetUserProfileResponseRequest(
                 profile.getId(),
@@ -48,14 +48,5 @@ public class UserProfileService {
         if(request.profilePictureUrl() != null) profile.setProfilePictureUrl(request.profilePictureUrl());
 
         return userProfileRepository.save(profile);
-    }
-
-
-    public UserProfile delete(UUID profileId){
-        UserProfile profile = userProfileRepository.findById(profileId)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found"));
-
-        userProfileRepository.delete(profile);
-        return profile;
     }
 }

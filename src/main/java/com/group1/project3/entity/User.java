@@ -105,7 +105,12 @@ public class User {
 
     public UserProfile getProfile() { return profile;}
 
-    public void setProfile(UserProfile profile){ this.profile = profile;}
+    public void setProfile(UserProfile profile){
+        this.profile = profile;
+        if(profile != null){
+            profile.setUser(this);
+        }
+    }
 
 
 }
