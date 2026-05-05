@@ -14,8 +14,8 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
     @Column(nullable = false)
@@ -52,7 +52,7 @@ public class Project {
     }
 
     public UUID getUserId() {
-        return user.getId();
+        return user != null ? user.getId() : null;
     }
 
     public void setUserId(UUID userId) {

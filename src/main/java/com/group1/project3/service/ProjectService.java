@@ -45,18 +45,13 @@ public class ProjectService {
     }
 
     public GetProjectResponseRequest createProject(CreateProjectRequest request) {
-        User user = userRepository.findById(request.userId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        User user = null;
+        if (request.userId() != null) {
+            user = userRepository.findById(request.userId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        }
 
-        Project project = new Project();
-        project.setTitle(request.title());
-        project.setGeneralDescription(request.generalDescription());
-        project.setType(request.type());
-        project.setCounty(request.county());
-
-        // Set user via the ManyToOne relationship
-        project = setProjectUser(project, user);
-
+        Project project = new Project(null, user, request.title(), request.generalDescription(), request.type(), request.county());
         Project saved = projectRepository.save(project);
         return toResponse(saved);
     }
@@ -92,9 +87,4 @@ public class ProjectService {
         );
     }
 
-    private Project setProjectUser(Project project, User user) {
-        // Use reflection-free approach: create new project with user
-        Project p = new Project(null, user, project.getTitle(), project.getGeneralDescription(), project.getType(), project.getCounty());
-        return p;
-    }
 }

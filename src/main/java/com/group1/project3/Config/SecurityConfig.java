@@ -16,7 +16,7 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    @Value("${app.frontend.origin:http://locahost:3000}")
+    @Value("${app.frontend.origin:http://localhost:3000}")
     private String frontendOrigin;
 
     @Value("http://localhost:8080/swagger-ui.html")
@@ -43,6 +43,9 @@ public class SecurityConfig {
 
                         // OAuth endpoints must be public
                         .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
+
+                        // Projects are public for now (auth will be unified with Firebase later)
+                        .requestMatchers("/projects/**").permitAll()
 
                         // Protect your API
                         .requestMatchers("/api/**").authenticated()
