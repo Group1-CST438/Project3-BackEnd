@@ -1,6 +1,7 @@
 package com.group1.project3.entity;
 
 import jakarta.persistence.*;
+
 import java.util.UUID;
 
 @Entity
@@ -11,21 +12,25 @@ public class UserProject {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "user_id", nullable = false)
-    private UUID userId;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(name = "project_id", nullable = false)
-    private UUID projectId;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
 
-    private String role;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
     public UserProject() {
     }
 
-    public UserProject(UUID id, UUID userId, UUID projectId, String role) {
+    public UserProject(UUID id, User user, Project project, Role role) {
         this.id = id;
-        this.userId = userId;
-        this.projectId = projectId;
+        this.user = user;
+        this.project = project;
         this.role = role;
     }
 
@@ -37,27 +42,29 @@ public class UserProject {
         this.id = id;
     }
 
-    public UUID getUserId() {
-        return userId;
-    }
+    public UUID getUserId() { return user.getId(); }
 
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
+    public void setUserId(UUID userId) { user.setId(userId); }
 
-    public UUID getProjectId() {
-        return projectId;
-    }
+    public User getUser() {return user;}
 
-    public void setProjectId(UUID projectId) {
-        this.projectId = projectId;
-    }
+    public void setUser(User user) {this.user = user;}
 
-    public String getRole() {
-        return role;
-    }
+    public UUID getProjectId() { return project.getId(); }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
+    public void setProjectId(UUID projectId) { project.setId(projectId); }
+
+    public Project getProject() {return project;}
+
+    public void setProject(Project project) {this.project = project;}
+
+    public UUID getRoleId() { return role.getId(); }
+
+    public void setRoleId(UUID roleId) { role.setId(roleId); }
+
+    public Role getRole() {return role;}
+
+    public void setRole(Role role) {this.role = role;}
+
+
 }
