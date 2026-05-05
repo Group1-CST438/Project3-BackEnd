@@ -1,6 +1,8 @@
 package com.group1.project3.entity;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.parameters.P;
+
 import java.util.UUID;
 
 @Entity
@@ -11,21 +13,25 @@ public class UserProject {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "user_id", nullable = false)
-    private UUID userId;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(name = "project_id", nullable = false)
-    private UUID projectId;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "project_id")
+    private Project project;
 
-    private String role;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     public UserProject() {
     }
 
-    public UserProject(UUID id, UUID userId, UUID projectId, String role) {
+    public UserProject(UUID id, User user, Project project, Role role) {
         this.id = id;
-        this.userId = userId;
-        this.projectId = projectId;
+        this.user = user;
+        this.project = project;
         this.role = role;
     }
 
@@ -37,27 +43,17 @@ public class UserProject {
         this.id = id;
     }
 
-    public UUID getUserId() {
-        return userId;
-    }
+    public User getUser() {return user;}
 
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
+    public void setUser(User user) {this.user = user;}
 
-    public UUID getProjectId() {
-        return projectId;
-    }
+    public Project getProject() {return project;}
 
-    public void setProjectId(UUID projectId) {
-        this.projectId = projectId;
-    }
+    public void setProject(Project project) {this.project = project;}
 
-    public String getRole() {
-        return role;
-    }
+    public Role getRole() {return role;}
 
-    public void setRole(String role) {
-        this.role = role;
-    }
+    public void setRole(Role role) {this.role = role;}
+
+
 }
