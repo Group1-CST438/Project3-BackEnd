@@ -32,6 +32,12 @@ public class Role {
         this.name = name;
     }
 
+    public Role(UUID id, String name, Project project) {
+        this.id = id;
+        this.name = name;
+        this.project = project;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -46,5 +52,17 @@ public class Role {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public UUID getProjectId() {
+        return project.getId();
     }
 }
