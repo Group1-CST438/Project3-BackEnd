@@ -1,12 +1,9 @@
 package com.group1.project3.Config;
 
-import com.group1.project3.OAuth.CustomOAuth2UserService;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,73 +16,24 @@ public class SecurityConfig {
     @Value("${app.frontend.origin:http://localhost:3000}")
     private String frontendOrigin;
 
-    @Value("http://localhost:8080/swagger-ui.html")
-    private String frontendSuccessUrl;
-
     @Bean
-    SecurityFilterChain springFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
+    SecurityFilterChain springFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration cfg = new CorsConfiguration();
                     cfg.setAllowedOrigins(List.of(frontendOrigin));
-                    cfg.setAllowedMethods(List.of("GET","POST","PATCH","DELETE","OPTIONS"));
+                    cfg.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
                     cfg.setAllowedHeaders(List.of("*"));
                     cfg.setAllowCredentials(true);
                     return cfg;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        // Preflight requests
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                        // Public endpoints
-                        .requestMatchers("/", "/error").permitAll()
-
-                        // OAuth endpoints must be public
-                        .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
-
-                        // Projects are public for now (auth will be unified with Firebase later)
-                        .requestMatchers("/projects/**").permitAll()
-
-                        // Protect your API
-                        .requestMatchers("/api/**").authenticated()
-
-                        .requestMatchers("/swagger-ui.html","/swagger-ui/**","/v3/api-docs/**").permitAll()
-
-                        .requestMatchers("/h2-console/**").permitAll()
-
-                        // Everything else (adjust as you like)
-                        .requestMatchers(HttpMethod.PATCH, "/user/*/info").hasRole("USER")
-                        .requestMatchers("/user/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
-                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
-                .oauth2Login(oauth -> oauth
-                        .defaultSuccessUrl(frontendSuccessUrl, true)
-                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                        .anyRequest().permitAll()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
-                .logout(logout -> logout
-                        .logoutUrl("/api/logout")
-                        .logoutSuccessUrl(frontendOrigin + "/")
-                )
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                            response.getWriter().write("""
-                                    {"error": "NOT AUTHENTICATED", "message" : "Authentication required"}
-                                    """
-                            );
-                        })
-                        .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                            response.getWriter().write("""
-                                    {"error": "FORBIDDEN", "message" : "Insufficient permissions"}
-                                    """);
-                        })
-                );
+                .httpBasic(AbstractHttpConfigurer::disable);
         return http.build();
     }
 }
