@@ -19,7 +19,7 @@ public class UserProfileService {
     public UserProfileService(UserProfileRepository userProfileRepository){ this.userProfileRepository = userProfileRepository;}
 
     public GetUserProfileResponseRequest getProfileByUserId(UUID userId){
-        UserProfile profile = userProfileRepository.findByUserId(userId)
+        UserProfile profile = userProfileRepository.findByUser_Id(userId)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found"));
 
         return new GetUserProfileResponseRequest(

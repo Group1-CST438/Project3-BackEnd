@@ -90,7 +90,7 @@ class ProjectServiceTest {
 
     @Test
     void getProjectsByUserId_returnsProjects() {
-        when(projectRepository.findByUserId(userId)).thenReturn(List.of(testProject));
+        when(projectRepository.findByUser_Id(userId)).thenReturn(List.of(testProject));
 
         List<GetProjectResponseRequest> result = projectService.getProjectsByUserId(userId);
 

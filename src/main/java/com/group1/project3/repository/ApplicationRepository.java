@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, UUID> {
-    List<Application> findByUserId(UUID userId);
-    List<Application> findByProjectId(UUID projectId);
+    List<Application> findByUser_Id(UUID userId);
+    List<Application> findByProject_Id(UUID projectId);
     List<Application> findByStatus(String status);
 }
