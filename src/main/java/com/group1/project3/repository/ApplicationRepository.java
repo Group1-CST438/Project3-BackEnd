@@ -14,8 +14,12 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
     @Query("select a from Application a where a.user.id = :userId")
     List<Application> findByUserId(@Param("userId") UUID userId);
 
+    List<Application> findByUser_Id(UUID userId);
+
     @Query("select a from Application a where a.project.id = :projectId")
     List<Application> findByProjectId(@Param("projectId") UUID projectId);
+
+    List<Application> findByProject_Id(UUID projectId);
 
     List<Application> findByStatus(String status);
 }
