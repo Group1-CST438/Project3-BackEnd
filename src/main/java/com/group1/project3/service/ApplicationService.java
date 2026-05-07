@@ -50,13 +50,13 @@ public class ApplicationService {
     }
 
     public List<GetApplicationResponseRequest> getApplicationsByUserId(UUID userId) {
-        return applicationRepository.findByUser_Id(userId).stream()
+        return applicationRepository.findByUserId(userId).stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
     public List<GetApplicationResponseRequest> getApplicationsByProjectId(UUID projectId) {
-        return applicationRepository.findByProject_Id(projectId).stream()
+        return applicationRepository.findByProjectId(projectId).stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
