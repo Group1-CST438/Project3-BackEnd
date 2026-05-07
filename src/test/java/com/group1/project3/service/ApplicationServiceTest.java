@@ -106,7 +106,7 @@ class ApplicationServiceTest {
 
     @Test
     void getApplicationsByUserId_returnsList() {
-        when(applicationRepository.findByUserId(userId)).thenReturn(List.of(testApplication));
+        when(applicationRepository.findByUser_Id(userId)).thenReturn(List.of(testApplication));
 
         List<GetApplicationResponseRequest> result = applicationService.getApplicationsByUserId(userId);
 
@@ -116,7 +116,7 @@ class ApplicationServiceTest {
 
     @Test
     void getApplicationsByProjectId_returnsList() {
-        when(applicationRepository.findByProjectId(projectId)).thenReturn(List.of(testApplication));
+        when(applicationRepository.findByProject_Id(projectId)).thenReturn(List.of(testApplication));
 
         List<GetApplicationResponseRequest> result = applicationService.getApplicationsByProjectId(projectId);
 
